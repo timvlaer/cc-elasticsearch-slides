@@ -39,8 +39,10 @@
 			margin-left: auto;
 			margin-right: auto;
 		}
+		.reveal h3.mtop, .reveal h2.mtop, .reveal h4.mtop, .reveal p.mtop {
+			 margin-top: 1.1em
+		}
 
-		
 
 
 		.reveal .schema div.s {
@@ -245,9 +247,11 @@
 						</div>
 						<div class="s buffer fragment">
 							<h5>Buffer</h5>
-							<div class="doc fragment">d</div>	
-							<div class="doc fragment">d</div>	
-							<div class="doc fragment">d</div>	
+							<div class="docs">
+								<div class="doc fragment">d</div>	
+								<div class="doc fragment">d</div>	
+								<div class="doc fragment">d</div>	
+							</div>
 						</div>
 						<div class="s arrow fragment flush">
 							<p><small>Lucene flush</small></p>
@@ -269,6 +273,27 @@
 							<h5>Segment</h5>
 						</div>
 					</div>
+
+					<aside class="notes"> 
+						Transaction Log naast Buffer (specifiek ES) - Garandeerd durability + vergemakkelijkt relocation/recovery
+
+					</aside>
+				</section>
+
+				<section>
+					<h2>Segments &amp; Search</h2>
+					<ul>						
+						<li>Sequentiele zoekopdracht</li>						
+						<li>Soft deletes</li>
+						<li>Segmenten zijn duur, af en toe mergen</li>
+					</ul>
+
+					<aside class="notes">
+						Segmenten zijn immutable
+						Deletes worden bijgehouden in een aparte lijst per segment
+						Mergen, telkens twee kleinste segmenten samenvoegen
+						Mergen, tegelijkertijd ook garbage collection van de soft deleted documents
+					</aside>
 				</section>
 
 <!--Demo-->
@@ -284,13 +309,193 @@
 
 <!--Index en Search-->
 				<section>
-					<h1>Index en Search API</h1>
+					<h1>Zoeken en vinden</h1>
 				</section>
-				
 
-				<section data-background="http://lenergiedavancer.com/wp-content/uploads/2012/02/NynashamnRefineryNight.jpg" data-background-transition="slide">
+				<section>
+					<h1>Analyzer</h1>
+				</section>
+
+				<section>
+					<h1>Analyzer</h1>
+					<h3 class="mtop">Tokenizer</h3>
+					<p class="fragment">standard, keyword, letter, whitespace, regex&hellip;</p>					
+					<h3 class="mtop">Token Filter</h3>
+					<p class="fragment">lowercase, stopword, ngram, shingle, stemming, phonetic, asciifolding, elision, synonym, length&hellip;</p>
+
+					<aside class="notes">
+						Tokenizer keyword: volledige input als een (1) token
+						Tokenizer letter: divides text at non-letters
+					</aside>
+				</section>
+
+				<section>
+					<h2>Analyzer config</h2>
+					<pre><code data-trim>
+							{"settings": {
+    "analysis": {
+        "analyzer": {
+            "nl_idx_analyzer": {
+                "type": "custom",
+                "tokenizer": "whitespace",
+                "filter": ["trim", "pdf_word_parts","short_words","pdf_unique_tokens","lowercase","nl_stop","asciifolding"]
+            }
+        },
+        "filter": {
+            "nl_stop": {
+                "type": "stop",
+                "stopwords": ["_dutch_"]
+            },
+            "pdf_word_parts": {
+                "type": "pattern_capture",
+                "preserve_original": true,
+                "patterns": [
+                    "(\\p{Ll}+|\\p{Lu}\\p{Ll}+|\\p{Lu}+)",
+                    "(\\S+)[^a-zA-Z0-9]+",
+                    "(\\w+)"
+                ]
+            },
+            "pdf_unique_tokens": {
+                "type": "unique",
+                "only_on_same_position": true
+            },
+            "short_words": {
+                "type": "length",
+                "min": 3
+            }
+        }
+    }
+}}
+						</code></pre>
+
+				</section>	
+
+				<section>
+					<h1>Analyzers Demo</h1>
+				</section>
+
+
+				<section>
+					<h1>Relevantie</h1>
+				</section>
+
+				<section>
+					<h2>Term Frequency<h2>
+					<hr>
+					<h2>Inverse Document Frequency</h2>
+				</section>
+
+				<section>
+					<h2>Lucene Ranking Formula</h2>
+					<img src="img/rankingformula.png" />
+				</section>
+
+				<section>
+					<h2>Explaining</h2>
+
+					<pre><code>TODO explain API voorbeeld (p113)</code></pre>
+
+					<aside class="notes">
+						Search API vs Explain API
+						/company/_search {"explain": true, query}
+						/company/1/_explain {query}
+					</aside>
+				</section>
+
+
+<!--In productie-->
+				<section data-background="http://lenergiedavancer.com/wp-content/uploads/2012/02/NynashamnRefineryNight.jpg">
 					<h1 class="emph">In productie</h1>
 				</section>
+
+				<section>
+					<h2>Master node election</h2>
+					<pre><code>minimum_master_nodes = {quorum} //quorum = helft + 1</code></pre>
+					<p>Via API toegankelijk bij aanpassing cluster grootte.</p>
+				</section>
+
+				<section>
+					<h2>Shard Allocation</h2>
+					<p>TODO hoe werkt het?</p>
+					<p>Awareness</p>
+				</section>
+
+				<section>
+					<h2>Node Types</h2>
+					<ul>
+						<li><strong>Data Node</strong></li>
+						<li><strong>Master Node</strong></li>
+						<li>Client Node</li>
+						<li>Tribe Node</li>
+					</ul>
+				</section>
+
+				<section>
+					<h2>Cluster health</h2>
+					<ol>
+						<li>green</li>
+						<li>yellow</li>
+						<li>red</li>
+					</ol>
+
+					<aside class="notes">
+					On the shard level, a red status indicates that the specific shard is not allocated in the cluster, <br>yellow means that the primary shard is allocated but replicas are not,<br>and green means that all shards are allocated. <br><br>
+					Bij rood is de cluster nog functioneel, de resultaten uit de niet-gealloceerde shard komen gewoon niet terug.
+					</aside>
+				</section>	
+
+				<section>
+					<h2>Capacity Planning</h2>
+					<p>Number of shards per index</p>
+				</section>
+
+				<section>
+					<h2>ES_HEAP_SIZE</h2>
+					<p>De helft van het geheugen van de hostmachine.</p>
+					<p>Niet meer dan 30Gb</p>
+					<p class="mtop">Indien te weinig (OutOfMemory) &#8594; meer nodes</p>
+
+					<aside class="notes">
+						helft geheugen - OS zal de rest als file system cache gebruiken<br />
+						30gb - the JVM can compress pointers from 64bit to 32bit
+					</aside>
+				</section>
+
+				<section>
+					<h1>SWAP nooit</h1>
+					<pre><code>bootstrap.mlockall = true</code></pre>
+					<pre><code>ulimit -l unlimited</code></pre>					
+					<p><small>(Enkel *NIX)</small></p>
+					<p class="mtop">Let op, dit kan de JVM doen crashen bij te weinig geheugen.</p>
+				</section>
+
+				<section>
+					<h2>Hardware</h2>
+				</section>
+
+				<section>
+					<h2>JVM</h2>
+					<p>OpenJDK of OracleJDK</p>
+					<p>7 of hoger</p>
+					<p>En <em>niet</em> 7u25 en 7u51</p>
+					<p class="mtop">Xms = Xmx</p>
+
+
+					<aside class="notes">
+						Xms - JVM memory allocation pool size
+					</aside>					
+				</section>
+
+				<section>
+					<h2>HTTP</h2>
+					<p>Long live http connections (nginx)</p>
+				</section>
+
+				<section>
+					<h1>Marvel</h1>
+				</section>
+
+
 
 
 
@@ -298,140 +503,33 @@
 					<h2>'Vergeten' features</h2>
 					<ul>
 						<li>Geolocation support</li>
-						<li>Nested fields - Parent/Child documents</li>
+						<li>Aggregations</li>
+						<li>Document relations: Nested fields - Parent/Child documents</li>
 						<li>Warmer API</li>
 						<li>Percolation API</li>
+						<li>Suggestions</li>
 						<li>Snapshot/Restore</li>
 						<li>Geen 'Write Amplification' op SSDs</li>
 					</ul>
 				</section>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-				<section>
-					<section data-background="#007777">
-						<h2>Slide Backgrounds</h2>
-						<p>
-							Set <code>data-background="#007777"</code> on a slide to change the full page background to the given color. All CSS color formats are supported.
-						</p>
-						<a href="#" class="image navigate-down">
-							<img width="178" height="238" src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Down arrow">
-						</a>
-					</section>
-					<section data-background="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png">
-						<h2>Image Backgrounds</h2>
-						<pre><code>&lt;section data-background="image.png"&gt;</code></pre>
-					</section>
-					<section data-background="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" data-background-repeat="repeat" data-background-size="100px">
-						<h2>Repeated Image Backgrounds</h2>
-						<pre><code style="word-wrap: break-word;">&lt;section data-background="image.png" data-background-repeat="repeat" data-background-size="100px"&gt;</code></pre>
-					</section>
+				<section data-background="http://upload.wikimedia.org/wikipedia/commons/4/44/Suorvajaure_in_stora_sjofallet_park.jpg">
+					<h1 class="emph">Bedankt</h1>
 				</section>
 
-				<section data-transition="linear" data-background="#4d7e65" data-background-transition="slide">
-					<h2>Background Transitions</h2>
-					<p>
-						Pass reveal.js the <code>backgroundTransition: 'slide'</code> config argument to make backgrounds slide rather than fade.
-					</p>
-				</section>
 
-				<section data-transition="linear" data-background="#8c4738" data-background-transition="slide">
-					<h2>Background Transition Override</h2>
-					<p>
-						You can override background transitions per slide by using <code>data-background-transition="slide"</code>.
-					</p>
-				</section>
 
-				<section>
-					<h2>Clever Quotes</h2>
-					<p>
-						These guys come in two forms, inline: <q cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
-						&ldquo;The nice thing about standards is that there are so many to choose from&rdquo;</q> and block:
-					</p>
-					<blockquote cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
-						&ldquo;For years there has been a theory that millions of monkeys typing at random on millions of typewriters would
-						reproduce the entire works of Shakespeare. The Internet has proven this theory to be untrue.&rdquo;
-					</blockquote>
-				</section>
 
-				<section>
-					<h2>Pretty Code</h2>
-					<pre><code data-trim contenteditable>
-function linkify( selector ) {
-  if( supports3DTransforms ) {
 
-    var nodes = document.querySelectorAll( selector );
 
-    for( var i = 0, len = nodes.length; i &lt; len; i++ ) {
-      var node = nodes[i];
 
-      if( !node.className ) {
-        node.className += ' roll';
-      }
-    }
-  }
-}
-					</code></pre>
-					<p>Courtesy of <a href="http://softwaremaniacs.org/soft/highlight/en/description/">highlight.js</a>.</p>
-				</section>
 
-				<section>
-					<h2>Intergalactic Interconnections</h2>
-					<p>
-						You can link between slides internally,
-						<a href="#/2/3">like this</a>.
-					</p>
-				</section>
 
-				<section>
-					<section id="fragments">
-						<h2>Fragmented Views</h2>
-						<p>Hit the next arrow...</p>
-						<p class="fragment">... to step through ...</p>
-						<ol>
-							<li class="fragment"><code>any type</code></li>
-							<li class="fragment"><em>of view</em></li>
-							<li class="fragment"><strong>fragments</strong></li>
-						</ol>
 
-						<aside class="notes">
-							This slide has fragments which are also stepped through in the notes window.
-						</aside>
-					</section>
-					<section>
-						<h2>Fragment Styles</h2>
-						<p>There's a few styles of fragments, like:</p>
-						<p class="fragment grow">grow</p>
-						<p class="fragment shrink">shrink</p>
-						<p class="fragment roll-in">roll-in</p>
-						<p class="fragment fade-out">fade-out</p>
-						<p class="fragment highlight-red">highlight-red</p>
-						<p class="fragment highlight-green">highlight-green</p>
-						<p class="fragment highlight-blue">highlight-blue</p>
-						<p class="fragment current-visible">current-visible</p>
-						<p class="fragment highlight-current-blue">highlight-current-blue</p>
-					</section>
-				</section>
 
-				<section>
-					<h2>Spectacular image!</h2>
-					<a class="image" href="http://lab.hakim.se/meny/" target="_blank">
-						<img width="320" height="299" src="http://s3.amazonaws.com/hakim-static/portfolio/images/meny.png" alt="Meny">
-					</a>
-				</section>
 
+				
 			</div>
 
 		</div>
@@ -452,6 +550,7 @@ function linkify( selector ) {
 
 				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
 				transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+				backgroundTransition: 'slide',
 
 				// Parallax scrolling
 				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
@@ -473,13 +572,9 @@ function linkify( selector ) {
 		<script>
 			$( document ).ready(function() {
  
- 				$(document).keydown(function (e) {
- 					if($(".flush.visible").length > 0){
-			   			$(".buffer .doc").css({ opacity: 0 });
-			   		}
-			   		if($(".segment.visible").length > 0){
-			   			$(".flush .doc").css({ opacity: 0 });
-			   		}
+ 				$(document).keydown(function (e) { 				
+		   			$(".buffer .docs").css({ opacity: ($(".flush").hasClass("visible") ? 0 : 1) });
+		   			$(".flush .doc").css({ opacity: ($(".segment").hasClass("visible") ? 0 : 1) });			   		
  				});			   
 			 
 			});
