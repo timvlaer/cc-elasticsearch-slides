@@ -28,6 +28,102 @@
 			}
 		</script>
 
+		<style type="text/css">
+		.reveal section img.raw {background: none; border: none; box-shadow: none;}
+		.reveal h1.emph {
+			color: black;
+			text-shadow: 0 0 80px #FFFFFF;
+		}
+		.reveal table {
+			width: 80%;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		
+
+
+		.reveal .schema div.s {
+			float: left;
+			margin-left: 0.6em;
+			margin-right: 0.6em;
+		}
+		.reveal div.arrow {			
+			width: 6em;
+			text-align: center;
+		}
+		.reveal div.arrow p {
+			background: transparent url() no-repeat 0 100%;
+		}
+		.reveal div.buffer {
+			border: 1px solid yellow; 
+			border-radius: 3px;
+			padding: 0.3em 1em;
+		}
+		.reveal div.buffer > h5 {
+			clear: both;
+		}
+		.reveal div.doc {
+			width: 1em; 
+			height: 1em; 
+    		border-radius: 0.5em;
+    		background-color: yellow;
+    		text-indent: -9999px;
+    		float: left;
+    		margin: 0.1em 0.1em;
+    		border: 2px solid #002b36
+		}
+		.reveal .flush div.doc {
+			margin-right: -0.6em;
+		}
+		.reveal div.segment {
+			width: 4em;
+			border: 1px solid yellow; 
+			border-radius: 3px;
+			background-color: yellow;				
+			padding: 0.3em 1em;	
+			margin-top: 1em;	
+			border: 2px solid #002b36
+		}
+		.reveal div.segment > h5 {
+			margin: 2px;
+			color: black;
+		}
+		.reveal div.segment2 {
+			margin-left: 1.1em !IMPORTANT; 
+			margin-top: -1.5em;
+		}
+		.reveal div.segment3 {
+			margin-left: 1.4em !IMPORTANT; 
+			margin-top: -1.1em;
+		}
+
+		.reveal div.doc ~ .reveal div.flush.visible {
+			opacity: 0;
+		}
+
+		.reveal div.arrow {
+		    width:150px;
+		    margin:5px auto;
+		}
+
+		.reveal div.line {
+		    margin-top:8px;
+		    width:120px;
+		    background:white;
+		    height:4px;
+		    float:left;
+		}
+		.reveal div.point {	
+		    width: 0; 
+			height: 0; 
+			border-top: 10px solid transparent;
+			border-bottom: 10px solid transparent;
+			border-left: 30px solid white;
+		    float:right;
+		}
+		</style>
+
 		<!--[if lt IE 9]>
 		<script src="lib/js/html5shiv.js"></script>
 		<![endif]-->
@@ -37,7 +133,6 @@
 
 		<div class="reveal">
 
-			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
 				<section>
 					<h1>Elasticsearch</h1>
@@ -51,10 +146,10 @@
 					<h2>Agenda</h2>
 					<ol>
 						<li>Wat is Elasticsearch?</li>
-						<li>Demo: KBCS Research Documents</li>
-						<li></li>
 						<li>Iets over Lucene</li>
-						<li>In productie (Distributie en tuning)</li>
+						<li>Demo: KBCS Research Documents</li>
+						<li>Index en Search API</li>
+						<li>In productie</li>
 					</ol>
 				</section>
 
@@ -96,19 +191,134 @@
 					</aside>
 				</section>
 
+<!--Lucene-->
+				<section>
+					<img src="https://drupal.org/files/project-images/lucene_0.png" alt="Lucene" class="raw" />
+				</section>
+
+				<section>
+					<h2></h2>
+				</section>
+
+				<section>
+					<h2>Inverted Index</h2>
+
+					<table class="fragment">
+					  <tr>
+					    <th>Token</th>
+					    <th>Doc Freq.</th>
+					    <th>Postings <small>Doc Ids</small></th>
+					  </tr>
+					  <tr>
+					    <td>Anthony</td>
+					    <td>2</td>
+					    <td>1, 2</td>
+					  </tr>
+					  <tr>
+					    <td>Brutus</td>
+					    <td>1</td>
+					    <td>5</td>
+					  </tr>
+					  <tr>
+					    <td>Caesar</td>
+					    <td>2</td>
+					    <td>2, 3</td>
+					  </tr>
+					  <tr>
+					    <td>Calpurnia</td>
+					    <td>2</td>
+					    <td>4, 5</td>
+					  </tr>
+					</table>
+				</section>
+
+				<section>
+					<h2 class="fragment current-visible">Indexing</h2>
+
+					<div class="schema">
+						<div class="s arrow fragment">
+							<p><small>Index a document</small></p>
+							<div class="arrow">
+								<div class="line"></div>
+								<div class="point"></div>
+							</div>
+						</div>
+						<div class="s buffer fragment">
+							<h5>Buffer</h5>
+							<div class="doc fragment">d</div>	
+							<div class="doc fragment">d</div>	
+							<div class="doc fragment">d</div>	
+						</div>
+						<div class="s arrow fragment flush">
+							<p><small>Lucene flush</small></p>
+							<div class="arrow">
+								<div class="line"></div>
+								<div class="point"></div>
+							</div>
+							<div class="doc">d</div>	
+							<div class="doc">d</div>	
+							<div class="doc">d</div>
+						</div>
+						<div class="s segment fragment">
+							<h5>Segment</h5>
+						</div>
+						<div class="s segment segment2 fragment">
+							<h5>Segment</h5>
+						</div>
+						<div class="s segment segment3 fragment">
+							<h5>Segment</h5>
+						</div>
+					</div>
+				</section>
+
+<!--Demo-->
+				<section>
+					<h2>Demo: KBCS Research Documents</h2>
+						<ol>
+							<li>Resultaat</li>
+							<li>PDF verwerking</li>
+							<li>Mapping</li>
+							<li>Zoekopdracht</li>
+						</ol>
+				</section>
+
+<!--Index en Search-->
+				<section>
+					<h1>Index en Search API</h1>
+				</section>
 				
+
+				<section data-background="http://lenergiedavancer.com/wp-content/uploads/2012/02/NynashamnRefineryNight.jpg" data-background-transition="slide">
+					<h1 class="emph">In productie</h1>
+				</section>
+
+
 
 				<section>
 					<h2>'Vergeten' features</h2>
 					<ul>
 						<li>Geolocation support</li>
 						<li>Nested fields - Parent/Child documents</li>
-						<li>Percolation</li>
+						<li>Warmer API</li>
+						<li>Percolation API</li>
 						<li>Snapshot/Restore</li>
 						<li>Geen 'Write Amplification' op SSDs</li>
-					</ul>	
-
+					</ul>
 				</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 				<section>
 					<section data-background="#007777">
@@ -228,6 +438,7 @@ function linkify( selector ) {
 
 		<script src="lib/js/head.min.js"></script>
 		<script src="js/reveal.min.js"></script>
+		<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 
 		<script>
 
@@ -257,6 +468,21 @@ function linkify( selector ) {
 				]
 			});
 
+		</script>
+
+		<script>
+			$( document ).ready(function() {
+ 
+ 				$(document).keydown(function (e) {
+ 					if($(".flush.visible").length > 0){
+			   			$(".buffer .doc").css({ opacity: 0 });
+			   		}
+			   		if($(".segment.visible").length > 0){
+			   			$(".flush .doc").css({ opacity: 0 });
+			   		}
+ 				});			   
+			 
+			});
 		</script>
 
 	</body>
