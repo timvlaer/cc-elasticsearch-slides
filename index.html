@@ -30,18 +30,41 @@
 
 		<style type="text/css">
 		.reveal section img.raw {background: none; border: none; box-shadow: none;}
-		.reveal h1.emph {
+		.reveal h1.emph, .reveal h2.emph {
 			color: black;
-			text-shadow: 0 0 80px #FFFFFF;
+			text-shadow: 0 0 50px #FFFFFF;
 		}
 		.reveal table {
 			width: 80%;
 			margin-left: auto;
 			margin-right: auto;
 		}
+		.reveal tr {
+			background: #003543;
+		}
+		.reveal th {
+			color: #D9EDED;
+		}
+		.reveal th, .reveal td {
+			padding: 0.4em 0.8em;
+		}	
+		.reveal th.center, .reveal td.center {
+			text-align: center;
+		}
+
 		.reveal h3.mtop, .reveal h2.mtop, .reveal h4.mtop, .reveal p.mtop {
 			 margin-top: 1.1em
 		}
+
+
+		.reveal div.color {
+			margin: 1em;
+			text-indent: -99999em;
+			padding: 0.7em;
+			border-radius: 3px;
+			box-shadow: 2px 2px 99px 0px rgba(0,0,0,0.5);
+		}
+
 
 
 
@@ -96,8 +119,8 @@
 			margin-top: -1.5em;
 		}
 		.reveal div.segment3 {
-			margin-left: 1.4em !IMPORTANT; 
-			margin-top: -1.1em;
+			margin-left: 1.6em !IMPORTANT; 
+			margin-top: -1.4em;
 		}
 
 		.reveal div.doc ~ .reveal div.flush.visible {
@@ -124,6 +147,9 @@
 			border-left: 30px solid white;
 		    float:right;
 		}
+
+
+
 		</style>
 
 		<!--[if lt IE 9]>
@@ -136,6 +162,10 @@
 		<div class="reveal">
 
 			<div class="slides">
+				<section data-background="http://erron.fr/wp-content/uploads/2013/04/wheres-wally-1.jpg">
+					<h1 class="emph">Elasticsearch</h1>
+				</section>
+
 				<section>
 					<h1>Elasticsearch</h1>
 					<h4>Distributed full-text search</h4>
@@ -149,8 +179,8 @@
 					<ol>
 						<li>Wat is Elasticsearch?</li>
 						<li>Iets over Lucene</li>
-						<li>Demo: KBCS Research Documents</li>
-						<li>Index en Search API</li>
+						<li>Case: KBCS Research Documents</li>
+						<li>Zoeken en vinden</li>
 						<li>In productie</li>
 					</ol>
 				</section>
@@ -161,46 +191,42 @@
 						<li>Document oriented search engine<br>
 							<small>JSON based, Apache Lucene</small></li>
 						<li>Schema free</li>
+							<small>Makkelijk ontwikkelen</small>
 						<li>Distributed<br>
 							<small>Scales Up + Out, Highly Available</small></li>
 						<li>Multitenancy<br>
 							<small>Dynamisch aanmaken en verwijderen van indices</small></li>
 						<li>API centric &amp; RESTful</li>
+							<small>Eenvoudige tooling</small>
 					</ul>
 				</section>	
 
 				<section>
 					<h2>Wat kan Elasticsearch?</h2>
-				</section>
+					<ul>
+						<li>Zoeken: gestructureerd en ongestructureerd</li>
+						<li>Analyse</li>
+						<li>In near realtime</li>
+					</ul>
 
-				<section data-background="http://erron.fr/wp-content/uploads/2013/04/wheres-wally-1.jpg" data-background-transition="slide">
-					<h1 style="color:black">Zoeken</h1>
-					<h2 style="color:black">Gestructureerd en ongestructureerd</h2>
 					<aside class="notes">
 						<p>Ongestructureerd: Alle documenten met 'goud' in, alle bedrijven die iets doen met grondwater...
 						Gestructureerd: Alle bedrijfen opgericht tussen 2010 en 2014, alle nederlandstalige documenten, alle 'turbos'...</p>
+
+						<p>Near realtime: Bij ES refresh --&gt; buffer geschreven naar Lucene segmenten</p>					
 					</aside>
 				</section>
 
-				<section data-background="http://s3.amazonaws.com/crunchbase_prod_assets/assets/images/original/0018/2843/182843v2.png" data-background-transition="slide">
-					<h1>Analyse</h1>
-				</section>
-
-				<section data-background="http://artchivebycarteblanche.com/wp-content/uploads/2013/12/Train-Station-Night-Walpaper-HD.jpg" data-background-transition="slide">
-					<h1>In near realtime</h1>
-					<aside class="notes">
-						<p>Near realtime: Bij ES refresh --&gt; buffer geschreven naar Lucene segmenten</p>
-					</aside>
-				</section>
 
 <!--Lucene-->
-				<section>
+				<section data-background="http://farm5.staticflickr.com/4010/4267559055_ee1141bcbb_o.jpg">
 					<img src="https://drupal.org/files/project-images/lucene_0.png" alt="Lucene" class="raw" />
 				</section>
 
 				<section>
-					<h2></h2>
-				</section>
+					<h2>grep</h2>
+					<p>'Caesar' in alle werken van Shakespeare.</p>
+				</section>	
 
 				<section>
 					<h2>Inverted Index</h2>
@@ -208,28 +234,28 @@
 					<table class="fragment">
 					  <tr>
 					    <th>Token</th>
-					    <th>Doc Freq.</th>
-					    <th>Postings <small>Doc Ids</small></th>
+					    <th class="center">Doc Freq.</th>
+					    <th class="center">Postings (Ids)</th>
 					  </tr>
 					  <tr>
 					    <td>Anthony</td>
-					    <td>2</td>
-					    <td>1, 2</td>
+					    <td class="center">2</td>
+					    <td class="center">1, 2</td>
 					  </tr>
 					  <tr>
 					    <td>Brutus</td>
-					    <td>1</td>
-					    <td>5</td>
+					    <td class="center">1</td>
+					    <td class="center">5</td>
 					  </tr>
 					  <tr>
 					    <td>Caesar</td>
-					    <td>2</td>
-					    <td>2, 3</td>
+					    <td class="center">2</td>
+					    <td class="center">2, 3</td>
 					  </tr>
 					  <tr>
 					    <td>Calpurnia</td>
-					    <td>2</td>
-					    <td>4, 5</td>
+					    <td class="center">2</td>
+					    <td class="center">4, 5</td>
 					  </tr>
 					</table>
 				</section>
@@ -289,31 +315,37 @@
 					</ul>
 
 					<aside class="notes">
-						Segmenten zijn immutable
-						Deletes worden bijgehouden in een aparte lijst per segment
-						Mergen, telkens twee kleinste segmenten samenvoegen
+						Segmenten zijn immutable<br>
+						Deletes worden bijgehouden in een aparte lijst per segment<br>
+						Mergen, telkens twee kleinste segmenten samenvoegen<br>
 						Mergen, tegelijkertijd ook garbage collection van de soft deleted documents
 					</aside>
 				</section>
 
 <!--Demo-->
 				<section>
-					<h2>Demo: KBCS Research Documents</h2>
-						<ol>
-							<li>Resultaat</li>
-							<li>PDF verwerking</li>
-							<li>Mapping</li>
-							<li>Zoekopdracht</li>
-						</ol>
+					<h1>KBCS Research Documents</h1>
+						<ul>
+							<li>20 000 PDF documenten</li>
+							<li>Nederlands, Frans en Engels</li>
+							<li>Vakjargon en bedrijfsnamen</li>
+						</ul>
 				</section>
 
-<!--Index en Search-->
-				<section>
-					<h1>Zoeken en vinden</h1>
+<!--Zoeken en vinden-->
+				<section data-background="http://farm8.staticflickr.com/7201/6983018663_bac2a28d83_o.jpg">
+					<h1 class="emph">Zoeken en vinden</h1>
 				</section>
 
+				<!--Zoeken en vinden: analyzers-->
 				<section>
 					<h1>Analyzer</h1>
+
+					<aside class="notes">
+						Waarom analyzer -> hoofdletters, asciifolding, varianten van woorden<br>
+						Bij indexering, data door analyzer.<br>
+						Bij zoeken, data door dezelfde analyzer.<br>
+					</aside>
 				</section>
 
 				<section>
@@ -368,13 +400,13 @@
 }}
 						</code></pre>
 
+						<aside class="notes">
+							+ DEMO !!
+						</aside>
+
 				</section>	
 
-				<section>
-					<h1>Analyzers Demo</h1>
-				</section>
-
-
+				<!--Zoeken en vinden: relevantie-->
 				<section>
 					<h1>Relevantie</h1>
 				</section>
@@ -383,6 +415,11 @@
 					<h2>Term Frequency<h2>
 					<hr>
 					<h2>Inverse Document Frequency</h2>
+
+					<aside class="notes">
+						TF: aantal keer de term in het document<br>
+						IDF: het aantal keer dat de term voorkomt in alle documenten in de collectie<br>
+					</aside>
 				</section>
 
 				<section>
@@ -393,7 +430,31 @@
 				<section>
 					<h2>Explaining</h2>
 
-					<pre><code>TODO explain API voorbeeld (p113)</code></pre>
+<div class="fragment">
+<pre><code data-trim>
+curl -XGET 'localhost:9200/twitter/tweet/1/_explain' -d '{
+      "query" : {
+        "term" : { "message" : "search" }
+      }
+}'</code></pre>
+<pre><code data-trim>{
+  "matches" : true,
+  "explanation" : {
+    "value" : 0.15342641,
+    "description" : "fieldWeight(message:search in 0), product of:",
+    "details" : [ {
+      "value" : 1.0,
+      "description" : "tf(termFreq(message:search)=1)"
+    }, {
+      "value" : 0.30685282,
+      "description" : "idf(docFreq=1, maxDocs=1)"
+    }, {
+      "value" : 0.5,
+      "description" : "fieldNorm(field=message, doc=0)"
+    } ]
+  }
+}</code></pre>
+</div>
 
 					<aside class="notes">
 						Search API vs Explain API
@@ -410,14 +471,27 @@
 
 				<section>
 					<h2>Master node election</h2>
-					<pre><code>minimum_master_nodes = {quorum} //quorum = helft + 1</code></pre>
-					<p>Via API toegankelijk bij aanpassing cluster grootte.</p>
+					<div class="fragment">
+						<pre><code>minimum_master_nodes = {quorum} //quorum = helft + 1</code></pre>
+						<p>Via API toegankelijk bij aanpassing cluster grootte.</p>
+					</div>	
+
+					<aside class="notes">
+						master nodes get elected <br>
+						split brain<br>
+						p172 of slides
+					</aside>
 				</section>
 
 				<section>
 					<h2>Shard Allocation</h2>
-					<p>TODO hoe werkt het?</p>
-					<p>Awareness</p>
+
+					<aside class="notes">
+						<p>hoe werkt het? --> head plugin <br>
+							random verdeling van primary en replica's over verschillende nodes
+						</p>
+						<p>Awareness: stuur de verdeling van primary en replica's aan en zorg er zo voor dat de twee versies in aparte datacenters staan of op aparte servers.</p>	
+					</aside>					
 				</section>
 
 				<section>
@@ -432,11 +506,11 @@
 
 				<section>
 					<h2>Cluster health</h2>
-					<ol>
-						<li>green</li>
-						<li>yellow</li>
-						<li>red</li>
-					</ol>
+					
+					<div class="color" style="background-color: #006620">green</div>
+					<div class="color" style="background-color: #FFD02C">yellow</div>
+					<div class="color" style="background-color: #660009">red</div>
+					
 
 					<aside class="notes">
 					On the shard level, a red status indicates that the specific shard is not allocated in the cluster, <br>yellow means that the primary shard is allocated but replicas are not,<br>and green means that all shards are allocated. <br><br>
@@ -447,6 +521,11 @@
 				<section>
 					<h2>Capacity Planning</h2>
 					<p>Number of shards per index</p>
+					<p>Circuit breaker</p>
+
+					<aside class="notes">
+						Circuit breaker om OoM te voorkomen -> fielddata in memory
+					</aside>
 				</section>
 
 				<section>
@@ -471,6 +550,22 @@
 
 				<section>
 					<h2>Hardware</h2>
+					<ul>
+						<li>Zoveel geheugen als economisch haalbaar.</li>
+						<li>Iedere node werkt concurrent, efficient CPU gebruik.</li>
+						<li>Snelle schijven!
+							<li>Overweeg SSD</li>
+							<li>Gebruik RAID enkel voor prestaties, gebruik ES replica's voor fouttolerantie.</li>
+						</li>
+						<li>Effici&euml;nt netwerk</li>
+						<li>Virtualisatie: gebruik shard allocation</li>
+					</ul>
+
+					<aside class="notes">
+						Ge kunt nooit genoeg file system cache hebben.<br>
+						En voor faceting/sorting heb je ook wat geheugen nodig.<br>
+						Shard allocation -> zodat niet alle kopieen op dezelfe fysieke machine draaien.<br>
+					</aside>					
 				</section>
 
 				<section>
@@ -488,14 +583,16 @@
 
 				<section>
 					<h2>HTTP</h2>
-					<p>Long live http connections (nginx)</p>
+					<p>long live http connections (nginx)</p>
 				</section>
 
 				<section>
-					<h1>Marvel</h1>
+					<h2>Marvel</h2>
 				</section>
 
-
+				<section data-background="http://upload.wikimedia.org/wikipedia/commons/0/07/Thorsm%C3%B6rk_Iceland_Autumn_Colors.jpg">
+					
+				</section>
 
 
 
@@ -515,7 +612,7 @@
 
 
 				<section data-background="http://upload.wikimedia.org/wikipedia/commons/4/44/Suorvajaure_in_stora_sjofallet_park.jpg">
-					<h1 class="emph">Bedankt</h1>
+					
 				</section>
 
 
