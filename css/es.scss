@@ -1,0 +1,123 @@
+.reveal {
+	section img.raw {background: none; border: none; box-shadow: none;}
+
+	h1.emph, h2.emph {
+		color: black;
+		text-shadow: 0 0 50px #FFFFFF;
+	}
+	table {
+		width: 80%;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	tr {
+		background: #003543;
+	}
+	th {
+		color: #D9EDED;
+	}
+	th, td {
+		padding: 0.4em 0.8em;
+	}	
+	th.center, td.center {
+		text-align: center;
+	}
+
+	h3.mtop, h2.mtop, h4.mtop, p.mtop {
+		 margin-top: 1.1em
+	}
+
+
+	div.color {
+		margin: 1em;
+		text-indent: -99999em;
+		padding: 0.7em;
+		border-radius: 3px;
+		box-shadow: 2px 2px 99px 0px rgba(0,0,0,0.5);
+	}
+
+
+
+
+	.schema div.s {
+		float: left;
+		margin-left: 0.6em;
+		margin-right: 0.6em;
+	}
+	div.arrow {			
+		width: 6em;
+		text-align: center;
+	}
+	div.arrow p {
+		background: transparent url() no-repeat 0 100%;
+	}
+	div.buffer {
+		border: 1px solid yellow; 
+		border-radius: 3px;
+		padding: 0.3em 1em;
+	}
+	div.buffer > h5 {
+		clear: both;
+	}
+	div.doc {
+		width: 1em; 
+		height: 1em; 
+		border-radius: 0.5em;
+		background-color: yellow;
+		text-indent: -9999px;
+		float: left;
+		margin: 0.1em 0.1em;
+		border: 2px solid #002b36
+	}
+	.flush div.doc {
+		margin-right: -0.6em;
+	}
+	div.segment {
+		width: 4em;
+		border: 1px solid yellow; 
+		border-radius: 3px;
+		background-color: yellow;				
+		padding: 0.3em 1em;	
+		margin-top: 1em;	
+		border: 2px solid #002b36
+	}
+	div.segment > h5 {
+		margin: 2px;
+		color: black;
+	}
+	div.segment2 {
+		margin-left: 1.1em !IMPORTANT; 
+		margin-top: -1.5em;
+	}
+	div.segment3 {
+		margin-left: 1.6em !IMPORTANT; 
+		margin-top: -1.4em;
+	}
+
+	div.doc ~ div.flush.visible {
+		opacity: 0;
+	}
+
+	div.arrow {
+	    width:150px;
+	    margin:5px auto;
+	}
+
+	div.line {
+	    margin-top:8px;
+	    width:120px;
+	    background:white;
+	    height:4px;
+	    float:left;
+	}
+	div.point {	
+	    width: 0; 
+		height: 0; 
+		border-top: 10px solid transparent;
+		border-bottom: 10px solid transparent;
+		border-left: 30px solid white;
+	    float:right;
+	}
+
+} 
+		
