@@ -57,8 +57,8 @@
 					<ol>
 						<li>Wat is Elasticsearch?</li>
 						<li>Iets over Lucene</li>
-						<li>Case: KBCS Research Documents</li>
 						<li>Zoeken en vinden</li>
+						<li>Case: KBCS Research Documents</li>						
 						<li>In productie</li>
 					</ol>
 				</section>
@@ -92,6 +92,32 @@
 						Gestructureerd: Alle bedrijfen opgericht tussen 2010 en 2014, alle nederlandstalige documenten, alle 'turbos'...</p>
 
 						<p>Near realtime: Bij ES refresh --&gt; buffer geschreven naar Lucene segmenten</p>					
+					</aside>
+				</section>
+
+				<section>
+					<h2>Alternatieven</h2>
+					<div>
+						<ul class="fragment" style="width: 100%; margin-bottom: 0.5em;">
+							<li style="text-decoration: line-through;">Relational Database</li>
+						</ul>
+						<ul class="fragment" style="width: 100%; margin-bottom: 0.5em;">
+							<li>Sphinx</li>
+							<li>Xapian</li>						
+						</ul>
+						<ul class="fragment" style="width: 100%; margin-bottom: 0.5em;">
+							<li>SOLR</li>
+							<li>Riak Search</li>
+						</ul>
+					</div>
+
+					<aside class="notes">
+						Elasticsearch: github, the gardian, deezer, soundcloud, stumbleupon, foursquare, wikimedia, mozilla...<br>
+						SOLR: Netflix, SourceForge, Digg, eBay...			<br>			
+						Sphinx en Xapian: written in C++<br>
+						<br>
+						Sphinx: opensubtitles.org, extratorrent, craigslist... <br>
+						Xapian: forum history of tweakers.net, mailing list archives (gmane, grokbase)
 					</aside>
 				</section>
 
@@ -199,20 +225,33 @@
 						Mergen, tegelijkertijd ook garbage collection van de soft deleted documents
 					</aside>
 				</section>
-
-<!--Demo-->
-				<section data-background="http://www.executive-magazine.com/wp-content/uploads/2014/04/stock-exchange.jpg">
-					<h1>KBCS Research Documents</h1>
-						<div style="background-color: rgba(0,0,50, 0.6); padding: 0.7em; color: white;">
-							<p>20 000 PDF-documenten</p>
-							<p>Nederlands, Frans en Engels</p>
-							<p>Vakjargon en bedrijfsnamen</p>
-						</div>
-				</section>
 				
 <!--Zoeken en vinden-->
 				<section data-background="http://farm8.staticflickr.com/7201/6983018663_bac2a28d83_o.jpg">
 					<h1 class="emph">Zoeken en vinden</h1>
+				</section>
+
+				<section>
+					<h2>Mapping</h2>
+					<pre><code data-trim>curl -XPUT "research_documents/document_nl/_mapping" -d</code></pre>
+
+					<pre><code data-trim>{ "document_nl": {
+    "_id": { "path": "document_id" },
+    "properties": {
+        "document_id": { "type": "long", "index": "not_analyzed" },
+
+        "title": { "type": "string", 
+                "index_analyzer": "nl_idx_analyzer", 
+                "search_analyzer": "search_analyzer" },
+
+        "publication_date": { "type": "date",
+                "format": "yyyy-MM-dd",
+                "index": "not_analyzed" },
+
+        "reference": { "type": "string",
+                "index": "no" }
+    }
+} }</code></pre>
 				</section>
 
 				<!--Zoeken en vinden: analyzers-->
@@ -280,7 +319,32 @@
 
 				</section>	
 
-				<!--Zoeken en vinden: relevantie-->
+				<section>
+					<h1>Indexeren!</h1>
+				</section>
+
+				<section data-background="http://images.brickbrowse.com/technic/mobile-crane-8053/technic-mobile-crane-8053-4.jpg">
+					
+				</section>
+
+				<section data-background="http://bricksafe.com/files/JurgensTechnicCorner/Ultimate%2042009/Ultimate%2042009%20extra%20parts.png">
+					
+				</section>
+
+				<section></section>
+
+<!--Demo-->
+				<section data-background="http://www.executive-magazine.com/wp-content/uploads/2014/04/stock-exchange.jpg">
+					<h1>KBCS Research Documents</h1>
+						<div style="background-color: rgba(0,0,50, 0.6); padding: 0.7em; color: white;">
+							<p>20 000 PDF-documenten</p>
+							<p>Nederlands, Frans en Engels</p>
+							<p>Vakjargon en bedrijfsnamen</p>
+						</div>
+				</section>
+
+
+<!--Zoeken en vinden: relevantie-->
 				<section>
 					<h1>Relevantie</h1>
 				</section>
@@ -336,6 +400,9 @@ curl -XGET 'localhost:9200/twitter/tweet/1/_explain' -d '{
 						/company/1/_explain {query}
 					</aside>
 				</section>
+
+
+
 
 
 <!--In productie-->
