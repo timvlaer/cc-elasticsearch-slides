@@ -1,0 +1,12 @@
+
+curl -XPOST 'localhost:9200/_analyze?pretty&tokenizer=keyword' -d 'New York'
+
+curl -XPOST 'localhost:9200/_analyze?pretty&tokenizer=keyword&filters=lowercase' -d 'New York'
+
+curl -XPOST 'localhost:9200/_analyze?pretty&tokenizer=whitespace&filters=lowercase' -d 'New York'
+
+curl -XPOST 'localhost:9200/_analyze?pretty&tokenizer=whitespace&filters=lowercase,asciifolding' -d 'Liège København Nørland Södermanland Holbæk'
+
+curl -XPOST 'localhost:9200/_analyze?pretty&tokenizer=whitespace&filters=lowercase,ngram' -d 'New York'
+
+curl -XPOST 'localhost:9200/_analyze?pretty&tokenizer=whitespace&filters=lowercase,stop,snowball' -d 'The quick brown fox jumped'

@@ -1,0 +1,178 @@
+GET research_documents/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+
+Paging:
+-------
+GET research_documents/_search
+{
+  "query": {
+    "match_all": {}
+  },
+  "from": 0, 
+  "size": 20
+}
+
+
+Filtered query: immutable segments -> cached, let op! language is not_analysed, case moet correct zijn
+--------
+GET research_documents/_search
+{
+  "query": {
+    "filtered": {
+      "query": {
+        "match_all": {}
+      },
+      "filter": {
+        "term": {
+          "language": "NL"
+        }
+      }
+    }
+  }
+}
+
+
+Extra filter: range
+---------
+GET research_documents/_search
+{
+  "query": {
+    "filtered": {
+      "query": {
+        "match_all": {}
+      },
+      "filter": [
+          {
+            "term": {
+              "language": "NL"
+            }
+          },
+          {
+            "range": {
+              "publication_date": {
+                "gte": "2014-04-21",
+                "lte": "2014-04-22"
+              }
+            }
+          }
+        ]
+    }
+  }
+}
+
+
+Filters zijn standaard OR --> maak AND
+--------------
+GET research_documents/_search
+{
+  "query": {
+    "filtered": {
+      "query": {
+        "match_all": {}
+      },
+      "filter": {
+        "and": [
+          {
+            "term": {
+              "language": "NL"
+            }
+          },
+          {
+            "range": {
+              "publication_date": {
+                "gte": "2014-04-21",
+                "lte": "2014-04-22"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+
+Zoeken op text: match
+---------------
+GET research_documents/_search
+{
+  "query": {
+    "match": {
+      "title": "ontbijt"
+    }
+  }
+}
+
+GET research_documents/_search
+{
+  "query": {
+    "match": {
+      "content": "nikkel"
+    }
+  }
+}
+
+GET research_documents/_search
+{
+  "query": {
+    "match": {
+      "content.partial": "nikke"
+    }
+  }
+}
+
+Zoeken op text in meerdere velden: multi_match
+------------
+GET research_documents/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "cofinimmo",
+      "fields": ["title", "content", "content.partial", "companies.analyzed" ]
+    }
+  }
+}
+
+Multi_match types: best_fields, tie_breaker ==> (score from best matching field + (tie_breaker * _score other matching fields))
+------
+GET research_documents/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "cofinimmo",
+      "fields": ["title^6", "content^3", "content.partial" ],
+      "type": "best_fields",
+      "tie_breaker": 0.3
+    }
+  }
+}
+
+GET research_documents/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "cofinimmo",
+      "fields": ["title^6", "content^3", "content.partial" ],
+      "type": "most_fields"
+    }
+  }
+}
+
+GET research_documents/_search
+{
+  "fields": [
+    "title", "publication_date", "language"
+  ], 
+  "query": {
+    "multi_match": {
+      "query": "rode duivels",
+      "fields": ["title^6", "content^3", "content.partial" ],
+      "type": "phrase"
+    }
+  }
+}
+
