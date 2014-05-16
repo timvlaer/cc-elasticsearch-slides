@@ -58,7 +58,7 @@
 						<li>Wat is Elasticsearch?</li>
 						<li>Iets over Lucene</li>
 						<li>Zoeken en vinden</li>
-						<li>Case: KBCS Research Documents</li>						
+						<li>Case: Research Documents</li>						
 						<li>In productie</li>
 					</ol>
 				</section>
@@ -91,6 +91,8 @@
 						<p>Ongestructureerd: Alle documenten met 'goud' in, alle bedrijven die iets doen met grondwater...
 						Gestructureerd: Alle bedrijfen opgericht tussen 2010 en 2014, alle nederlandstalige documenten, alle 'turbos'...</p>
 
+						<p>Analyse: average annual revenue for all companies</p>
+
 						<p>Near realtime: Bij ES refresh --&gt; buffer geschreven naar Lucene segmenten</p>					
 					</aside>
 				</section>
@@ -98,16 +100,22 @@
 				<section>
 					<h2>Alternatieven</h2>
 					<div>
-						<ul class="fragment" style="width: 100%; margin-bottom: 0.5em;">
-							<li style="text-decoration: line-through;">Relational Database</li>
+						<ul style="width: 100%; margin-bottom: 0.5em;">
+							<li style="text-decoration: line-through;" class="fragment">Relational Database</li>
+							<li style="text-decoration: line-through;" class="fragment">NoSQL Document Store</li>
 						</ul>
 						<ul class="fragment" style="width: 100%; margin-bottom: 0.5em;">
 							<li>Sphinx</li>
 							<li>Xapian</li>						
 						</ul>
 						<ul class="fragment" style="width: 100%; margin-bottom: 0.5em;">
-							<li>SOLR</li>
+							<li>Amazon's CloudSearch</li>
+							<li>Google App Engine</li>
+							<li>...</li>
+						</ul>
+						<ul class="fragment" style="width: 100%; margin-bottom: 0.5em;">
 							<li>Riak Search</li>
+							<li>SOLR</li>							
 						</ul>
 					</div>
 
@@ -116,7 +124,7 @@
 						SOLR: Netflix, SourceForge, Digg, eBay...			<br>			
 						Sphinx en Xapian: written in C++<br>
 						<br>
-						Sphinx: opensubtitles.org, extratorrent, craigslist... <br>
+						Sphinx: opensubtitles.org, extratorrent, craigslist... API is proprietary protocol<br>
 						Xapian: forum history of tweakers.net, mailing list archives (gmane, grokbase)
 					</aside>
 				</section>
@@ -128,8 +136,14 @@
 				</section>
 
 				<section>
-					<h2>grep</h2>
-					<p>'Caesar' in alle werken van Shakespeare.</p>
+					<pre><code class="big">grep "Caesar" *</pre></code>
+					<aside class="notes"><p>'Caesar' in alle werken van Shakespeare.</p></aside>
+				</section>	
+
+				<section>
+					<pre><code class="big">SELECT * FROM documents 
+WHERE text like "%Caesar%";</pre></code>
+					<aside class="notes"><p>'Caesar' in alle werken van Shakespeare.</p></aside>
 				</section>	
 
 				<section>
@@ -162,6 +176,14 @@
 					    <td class="center">4, 5</td>
 					  </tr>
 					</table>
+				</section>
+
+				<section data-background="http://www.lib.utexas.edu/maps/historical/colbeck/index_cr_er.jpg">
+					<aside class="notes">Dus dit is lucene: gigantische index</aside>
+				</section>
+
+				<section data-background="http://www.meldmagazine.com.au/wp-content/uploads/2011/10/library.jpg">
+					<aside class="notes">Dus dit is lucene: gigantische index</aside>
 				</section>
 
 				<section>
@@ -320,22 +342,30 @@
 				</section>	
 
 				<section>
-					<h1>Indexeren!</h1>
+					<h2>Indexeren!</h2>
+					<pre><code data-trim>curl -XPUT "research_documents/document_nl/126764" -d</code></pre>
+
+					<pre><code data-trim>{ 
+    "title": "Grondstoffenfocus: \"Zilver en Koffie\"",
+    "publication_date": "2014-06-19",
+    "reference": "http://www.kbcsecurities.be/researchdocument/126764.pdf"
+}</code></pre>
+
 				</section>
 
+
+				<section data-background="http://www.legomindstormsrobots.com/wp-content/uploads/2010/06/MindstormsCollection-c.jpg">					
+				</section>
 				<section data-background="http://images.brickbrowse.com/technic/mobile-crane-8053/technic-mobile-crane-8053-4.jpg">
-					
 				</section>
-
 				<section data-background="http://bricksafe.com/files/JurgensTechnicCorner/Ultimate%2042009/Ultimate%2042009%20extra%20parts.png">
-					
 				</section>
 
-				<section></section>
+				<section data-background="http://motherstucker.com/wp-content/uploads/2013/04/lego.jpg"></section>
 
 <!--Demo-->
 				<section data-background="http://www.executive-magazine.com/wp-content/uploads/2014/04/stock-exchange.jpg">
-					<h1>KBCS Research Documents</h1>
+					<h1>Research Documents</h1>
 						<div style="background-color: rgba(0,0,50, 0.6); padding: 0.7em; color: white;">
 							<p>20 000 PDF-documenten</p>
 							<p>Nederlands, Frans en Engels</p>
@@ -443,6 +473,13 @@ curl -XGET 'localhost:9200/twitter/tweet/1/_explain' -d '{
 						<li>Client Node</li>
 						<li>Tribe Node</li>
 					</ul>
+
+					<aside class="notes">
+						<p>Data node: bevat data, primary of replica's</p>
+						<p>Master node: kandidaat master</p>
+						<p>Client node: geen master noch data, kan wel voten voor master. Handig voor programming API's</p>
+						<p>Tribe node: allows to act as a federated client across multiple clusters</p>
+					</aside>
 				</section>
 
 				<section>
@@ -527,8 +564,8 @@ curl -XGET 'localhost:9200/twitter/tweet/1/_explain' -d '{
 					<p>long live http connections (nginx)</p>
 				</section>
 
-				<section>
-					<h2>Marvel</h2>
+				<section data-background="http://www.filmhoek.nl/wp-content/uploads/2013/08/3201865-marvel-characters.jpg">
+					<h1 style="text-indent:-99999px">Marvel</h1>
 				</section>
 
 				<section data-background="http://upload.wikimedia.org/wikipedia/commons/0/07/Thorsm%C3%B6rk_Iceland_Autumn_Colors.jpg">
@@ -556,16 +593,13 @@ curl -XGET 'localhost:9200/twitter/tweet/1/_explain' -d '{
 					
 				</section>
 
+				<section data-background="http://englishd.files.wordpress.com/2010/04/wally2.jpg">
+					
+				</section>
 
-
-
-
-
-
-
-
-
-
+				<section data-background="http://pixel.nymag.com/content/dam/daily/vulture/2011/11/07/07_whereswaldo.jpg">
+					
+				</section>
 
 				
 			</div>
