@@ -309,7 +309,8 @@ WHERE text like "%Caesar%";</pre></code>
             "nl_idx_analyzer": {
                 "type": "custom",
                 "tokenizer": "whitespace",
-                "filter": ["trim", "pdf_word_parts","short_words","lowercase","nl_stop","asciifolding"]
+                "filter": ["trim", "pdf_word_parts","short_words",
+		    "lowercase","nl_stop","asciifolding"]
             }
         },
         "filter": {
@@ -348,7 +349,7 @@ WHERE text like "%Caesar%";</pre></code>
 					<pre><code data-trim>{ 
     "title": "Grondstoffenfocus: \"Zilver en Koffie\"",
     "publication_date": "2014-06-19",
-    "reference": "http://www.kbcsecurities.be/researchdocument/126764.pdf"
+    "reference": "http://www.kbcs.be/researchdocument/126764.pdf"
 }</code></pre>
 
 				</section>
@@ -365,8 +366,8 @@ WHERE text like "%Caesar%";</pre></code>
 
 <!--Demo-->
 				<section data-background="http://www.executive-magazine.com/wp-content/uploads/2014/04/stock-exchange.jpg">
-					<h1>Research Documents</h1>
-						<div style="background-color: rgba(0,0,50, 0.6); padding: 0.7em; color: white;">
+						<div style="background-color: rgba(0,0,50, 0.6); padding: 0.7em; color: white;">							
+							<h1>Research Documents</h1>						
 							<p>20 000 PDF-documenten</p>
 							<p>Nederlands, Frans en Engels</p>
 							<p>Vakjargon en bedrijfsnamen</p>
@@ -405,22 +406,21 @@ curl -XGET 'localhost:9200/twitter/tweet/1/_explain' -d '{
         "term" : { "message" : "search" }
       }
 }'</code></pre>
-<pre><code data-trim>{
-  "matches" : true,
-  "explanation" : {
-    "value" : 0.15342641,
-    "description" : "fieldWeight(message:search in 0), product of:",
-    "details" : [ {
-      "value" : 1.0,
-      "description" : "tf(termFreq(message:search)=1)"
-    }, {
-      "value" : 0.30685282,
-      "description" : "idf(docFreq=1, maxDocs=1)"
-    }, {
-      "value" : 0.5,
-      "description" : "fieldNorm(field=message, doc=0)"
-    } ]
-  }
+<pre><code data-trim>{"matches" : true,
+ "explanation" : {
+   "value" : 0.15342641,
+   "description" : "fieldWeight(message:search in 0), product of:",
+   "details" : [ {
+     "value" : 1.0,
+     "description" : "tf(termFreq(message:search)=1)"
+   }, {
+     "value" : 0.30685282,
+     "description" : "idf(docFreq=1, maxDocs=1)"
+   }, {
+     "value" : 0.5,
+     "description" : "fieldNorm(field=message, doc=0)"
+   } ]
+  } 
 }</code></pre>
 </div>
 
