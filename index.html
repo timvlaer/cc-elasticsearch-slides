@@ -274,6 +274,17 @@ WHERE text like "%Caesar%";</pre></code>
                 "index": "no" }
     }
 } }</code></pre>
+					<aside class="notes">
+						<ul>
+						<li>core: string - integer/long/short/byte/float/double - boolean - null</li>
+						<li>arrays</li>
+						<li>objects (full json object structure) - nested types (nested objects that can be queried as separate objects)</li>
+						<li>ip type</li>
+						<li>geo point - geo shape</li>
+						<li>attachment (as plugin)</li>
+						</ul>
+					</aside>
+
 				</section>
 
 				<!--Zoeken en vinden: analyzers-->
@@ -284,6 +295,8 @@ WHERE text like "%Caesar%";</pre></code>
 						Waarom analyzer -> hoofdletters, asciifolding, varianten van woorden<br>
 						Bij indexering, data door analyzer.<br>
 						Bij zoeken, data door dezelfde analyzer.<br>
+						<br>
+						+ DEMO analyzers (curl) !! 
 					</aside>
 				</section>
 
@@ -337,7 +350,7 @@ WHERE text like "%Caesar%";</pre></code>
 						</code></pre>
 
 						<aside class="notes">
-							+ DEMO !! (demo-analyzer op bureaublad)
+							
 						</aside>
 
 				</section>	
